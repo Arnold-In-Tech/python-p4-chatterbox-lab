@@ -33,9 +33,18 @@ def messages():
 
 
     elif request.method == 'POST':
+
+        # new_message = Message(
+        #     body=request.form.get("body"),
+        #     username=request.form.get("username")
+        # )
+
+        # Retrieve the data (posted as json) with request.get_json() as instructed 
+        data = request.get_json()
+        
         new_message = Message(
-            body=request.form.get("body"),
-            username=request.form.get("username")
+            body=data["body"],
+            username=data["username"]
         )
 
         db.session.add(new_message)
@@ -67,9 +76,12 @@ def messages_by_id(id):
 
     else:
         if request.method == 'PATCH':
+            
+            # The updated message is patched as a json, therefore request.get_json() is used to retrieve it
+            updated_message = request.get_json()
         
-            for attr in request.form:
-                setattr(message, attr, request.form.get(attr))
+            for attr in updated_message:
+                setattr(message, attr, updated_message.get(attr))
 
             db.session.add(message)
             db.session.commit()
